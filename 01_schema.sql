@@ -3,6 +3,11 @@
 -- Versión: 1.0.0
 -- Motor: MySQL 8.x (compatible con 5.7+ con ajustes menores)
 -- Charset: utf8mb4 (soporte completo Unicode incluido emojis)
+--
+-- VALORES DE ESTE PROYECTO:
+--   Base de datos: cursos_online
+--   Usuario app:   admin_cursos_online
+--   Password:      cursos1234   (CAMBIAR EN PRODUCCIÓN)
 -- =====================================================================
 
 -- ---------------------------------------------------------------------
@@ -219,8 +224,8 @@ CREATE TABLE video_views (
     updated_at              TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_views_session FOREIGN KEY (session_id) REFERENCES access_sessions(id) ON DELETE CASCADE,
     CONSTRAINT fk_views_video   FOREIGN KEY (video_id)   REFERENCES videos(id),
-    KEY idx_views_session (session_id),
-    KEY idx_views_video   (video_id, started_at)
+    UNIQUE KEY uniq_views_session_video (session_id, video_id),
+    KEY idx_views_video (video_id, started_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
@@ -261,6 +266,22 @@ CREATE TABLE settings (
     updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_settings_admin FOREIGN KEY (updated_by) REFERENCES admins(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- =====================================================================
+-- USUARIO DE APLICACIÓN
+-- =====================================================================
+-- Crea el usuario que el backend usará para conectarse a esta BD.
+-- IMPORTANTE: 'cursos1234' es un password DE DESARROLLO. Cámbialo por
+-- algo fuerte antes de exponer la app a internet.
+-- ---------------------------------------------------------------------
+CREATE USER IF NOT EXISTS 'admin_cursos_online'@'localhost' IDENTIFIED BY 'cursos1234';
+
+GRANT SELECT, INSERT, UPDATE, DELETE, EXECUTE,
+      CREATE, ALTER, DROP, INDEX, REFERENCES, CREATE VIEW, SHOW VIEW
+ON cursos_online.* TO 'admin_cursos_online'@'localhost';
+
+FLUSH PRIVILEGES;
 
 
 -- =====================================================================

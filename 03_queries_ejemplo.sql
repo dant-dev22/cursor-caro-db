@@ -92,7 +92,8 @@ WHERE s.session_token = :token
   AND v.deleted_at IS NULL;
 
 -- ---------------------------------------------------------------------
--- 6) Registrar/actualizar progreso de visualización
+-- 6) Registrar/actualizar progreso de visualización (UPSERT)
+-- Aprovecha el UNIQUE KEY (session_id, video_id)
 -- ---------------------------------------------------------------------
 INSERT INTO video_views (session_id, video_id, last_position_seconds, watched_seconds)
 VALUES (:session_id, :video_id, :position, :watched)
@@ -100,7 +101,6 @@ ON DUPLICATE KEY UPDATE
     last_position_seconds = VALUES(last_position_seconds),
     watched_seconds       = GREATEST(watched_seconds, VALUES(watched_seconds)),
     updated_at            = NOW();
--- Nota: agregar UNIQUE KEY (session_id, video_id) si quieres usar este UPSERT.
 
 -- ---------------------------------------------------------------------
 -- 7) Admin: estadísticas rápidas

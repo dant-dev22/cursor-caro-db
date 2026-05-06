@@ -24,11 +24,11 @@ INSERT INTO roles (slug, name, description, permissions) VALUES
 ));
 
 -- ---------------------------------------------------------------------
--- Admin inicial
--- IMPORTANTE: Cambiar el hash. Ejemplo abajo es bcrypt de "ChangeMe123!"
--- Para generar un hash nuevo en Node.js:
---   require('bcrypt').hashSync('TuPasswordReal', 12)
--- En PHP: password_hash('TuPasswordReal', PASSWORD_BCRYPT, ['cost'=>12])
+-- Admin inicial (USUARIO DE LA APLICACIÓN, no del motor MySQL)
+-- IMPORTANTE: el password_hash debe ser un bcrypt real generado desde
+-- tu backend o desde línea de comandos (ver INSTALACION.md paso 4).
+-- El placeholder de abajo NO es un hash válido y forzará a que lo
+-- reemplaces antes del primer login.
 -- ---------------------------------------------------------------------
 INSERT INTO admins (role_id, name, email, password_hash, is_active)
 VALUES (
